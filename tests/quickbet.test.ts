@@ -50,8 +50,18 @@ let nextId = BigInt(Date.now()) * 10n;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function send(ixs: TransactionInstruction[], signers: Keypair[]) {
-  const tx = new Transaction().add(...ixs);
-  return sendAndConfirmTransaction(connection, tx, signers, { commitment: "confirmed" });
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const tx = new Transaction().add(...ixs);
+      return await sendAndConfirmTransaction(connection, tx, signers, { commitment: "confirmed" });
+    } catch (e: any) {
+      if (attempt < 4 && /Blockhash not found/i.test(String(e?.message))) {
+        await sleep(400);
+        continue;
+      }
+      throw e;
+    }
+  }
 }
 
 async function expectError(p: Promise<unknown>, code: string) {

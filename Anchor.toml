@@ -12,6 +12,10 @@ quickbet = "5PvfZ55DA7pK1zK1AAd1HLPXZmbdykFBFFuU4i6KepJ3"
 [programs.devnet]
 quickbet = "5PvfZ55DA7pK1zK1AAd1HLPXZmbdykFBFFuU4i6KepJ3"
 
+[tooling]
+# Surfpool (the Anchor 1.x default) returned "Blockhash not found" under parallel test setup in CI.
+validator = "solana"
+
 [provider]
 cluster = "localnet"
 wallet = "~/.config/solana/id.json"
