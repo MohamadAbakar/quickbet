@@ -332,7 +332,7 @@ export const short = (pk: PublicKey | string) => {
   const s = typeof pk === "string" ? pk : pk.toBase58();
   return s.slice(0, 4) + "…" + s.slice(-4);
 };
-export const tableCode = (tableId: bigint | number) => "TABLE-" + String(tableId);
+export const tableCode = (tableId: bigint | number | string) => "TABLE-" + String(tableId);
 export const explorerTx = (sig: string, cluster = "devnet") =>
   `https://explorer.solana.com/tx/${sig}?cluster=${cluster}`;
 export const explorerAddr = (addr: string, cluster = "devnet") =>

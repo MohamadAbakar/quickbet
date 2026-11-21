@@ -1,0 +1,20 @@
+name: web
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  typecheck-test-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci || npm install
+      - name: Typecheck (sdk, tests, server, app)
+        run: npm run typecheck
+      - name: Game rule tests
+        run: npm test -w server
+      - name: Build app
+        run: npm run build -w app
