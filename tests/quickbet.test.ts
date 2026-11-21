@@ -176,6 +176,8 @@ async function assertPayout(s: Setup, payouts: bigint[], before: bigint[]) {
 }
 
 before(async () => {
+  // A freshly started local validator expires early blockhashes; let it warm up first.
+  for (let i = 0; i < 120 && (await connection.getBlockHeight("confirmed")) < 40; i++) await sleep(500);
   await airdrop(payer.publicKey, 10).catch(() => {});
   mint = await createMint(connection, payer, payer.publicKey, null, 6);
 });
