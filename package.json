@@ -1,0 +1,21 @@
+{
+  "name": "quickbet",
+  "private": true,
+  "type": "module",
+  "workspaces": ["server", "app"],
+  "scripts": {
+    "test:program": "NO_DNA=1 anchor test",
+    "typecheck": "tsc -p tsconfig.json --noEmit && npm run typecheck -w server && npm run typecheck -w app",
+    "dev": "node scripts/dev-local.mjs"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.99.0",
+    "buffer": "^6.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.3"
+  }
+}
