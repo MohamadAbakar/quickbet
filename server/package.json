@@ -1,1 +1,25 @@
-{"name":"quickbet-server","private":true,"type":"module","scripts":{"typecheck":"echo pending"}}
+{
+  "name": "quickbet-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "setup-devnet": "tsx scripts/setup-devnet.ts",
+    "topup": "tsx scripts/topup.ts",
+    "demo-cycle": "tsx scripts/demo-cycle.ts",
+    "sim": "tsx scripts/sim-clients.ts"
+  },
+  "dependencies": {
+    "bs58": "^6.0.0",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/ws": "^8.18.0"
+  }
+}

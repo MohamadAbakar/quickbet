@@ -14,8 +14,8 @@ import {
 } from "@solana/web3.js";
 import {
   createMint,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
+  createAssociatedTokenAccountIdempotentInstruction,
+  createMintToInstruction,
   getAccount,
 } from "@solana/spl-token";
 import {
@@ -75,8 +75,14 @@ async function airdrop(pk: PublicKey, sol = 2) {
 async function newPlayer(): Promise<Keypair> {
   const kp = Keypair.generate();
   await airdrop(kp.publicKey);
-  const acct = await getOrCreateAssociatedTokenAccount(connection, payer, mint, kp.publicKey);
-  await mintTo(connection, payer, mint, acct.address, payer, toBase(250));
+  const tokenAcct = ata(kp.publicKey, mint);
+  await send(
+    [
+      createAssociatedTokenAccountIdempotentInstruction(payer.publicKey, tokenAcct, kp.publicKey, mint),
+      createMintToInstruction(mint, tokenAcct, payer.publicKey, toBase(250)),
+    ],
+    [payer]
+  );
   return kp;
 }
 
