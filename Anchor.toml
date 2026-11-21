@@ -1,0 +1,20 @@
+[toolchain]
+anchor_version = "1.1.2"
+package_manager = "npm"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+quickbet = "5PvfZ55DA7pK1zK1AAd1HLPXZmbdykFBFFuU4i6KepJ3"
+
+[programs.devnet]
+quickbet = "5PvfZ55DA7pK1zK1AAd1HLPXZmbdykFBFFuU4i6KepJ3"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "npx tsx --test tests/quickbet.test.ts"

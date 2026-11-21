@@ -1,0 +1,48 @@
+name: program
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/registry
+            ~/.local/share/solana
+            target
+          key: anchor-1.1.2-solana-3.1.10-${{ hashFiles('**/Cargo.lock', '**/Cargo.toml') }}
+          restore-keys: anchor-1.1.2-solana-3.1.10-
+      - name: Install Solana CLI 3.1.10
+        run: |
+          if [ ! -x ~/.local/share/solana/install/active_release/bin/solana ]; then
+            sh -c "$(curl -sSfL https://release.anza.xyz/v3.1.10/install)"
+          fi
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+      - name: Install Anchor CLI 1.1.2
+        run: |
+          if ! anchor --version 2>/dev/null | grep -q 1.1.2; then
+            cargo install --git https://github.com/solana-foundation/anchor --tag v1.1.2 anchor-cli --locked --force
+          fi
+          anchor --version
+      - name: Install Surfpool
+        run: curl -sL https://run.surfpool.run/ | bash && surfpool --version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Ephemeral CI wallet + program key
+        run: |
+          mkdir -p ~/.config/solana
+          solana-keygen new --no-bip39-passphrase -s -o ~/.config/solana/id.json --force
+          anchor keys sync
+      - name: Build
+        run: NO_DNA=1 anchor build
+      - name: Test
+        if: hashFiles('tests/quickbet.test.ts') != ''
+        run: |
+          npm ci || npm install
+          NO_DNA=1 anchor test --skip-build
