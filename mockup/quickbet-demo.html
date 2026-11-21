@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuickBet demo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{--bg:#0E1116;--card:#171B22;--line:#2A313C;--fg:#F2F4F7;--soft:#C5CCD6;--muted:#9AA4B2;--accent:#2DD4A3;--ink:#0B0F14;--warn:#F5A524}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#06080B;color:var(--fg);font-family:Inter,system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+button,input{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+.phone{width:100%;max-width:430px;height:100%;max-height:900px;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+@media (min-width:520px){.phone{height:calc(100% - 32px);border:1px solid var(--line);border-radius:36px}}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:20px 24px 12px}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.5px;background:none;border:0;color:var(--fg);padding:0;min-height:44px}
+.tag{font-size:12px;font-weight:500;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 12px;white-space:nowrap}
+.screen{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding:8px 24px 24px}
+.grow{flex:1}
+h1{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;line-height:1.2;letter-spacing:-.5px}
+.eyebrow,.label{font-size:13px;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--card);border-radius:16px;padding:16px}
+.between{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.num{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-1px}
+.btn{height:56px;flex-shrink:0;border-radius:16px;font-weight:600;font-size:17px;border:1px solid var(--line);background:transparent;color:var(--fg);padding:0 12px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.btn.outline{border-color:var(--accent)}
+.btn.small{height:48px;border-radius:14px;font-weight:500;font-size:15px}
+.btn.text{height:44px;border:0;color:var(--muted);font-weight:500;font-size:15px}
+.hint{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--muted);text-align:center}
+.note{font-size:13px;line-height:1.5;color:var(--muted)}
+.body{font-size:14px;line-height:1.5;color:var(--soft)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.field{height:52px;width:100%;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--fg);padding:0 16px;font-size:16px}
+.opt{border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--fg);text-align:left}
+.opt.on{border-color:var(--accent)}
+.mode{min-height:68px;padding:10px 16px;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.mode b{display:flex;justify-content:space-between;font-weight:600;font-size:16px}
+.mode b span{font-size:12px;color:var(--accent)}
+.mode small{font-size:13px;line-height:1.4;color:var(--muted)}
+.pill{height:48px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--fg);font-weight:600;font-size:17px}
+.pill.on{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.row{min-height:52px;background:var(--card);border:1px solid var(--card);border-radius:14px;padding:6px 14px;display:flex;align-items:center;gap:12px}
+.row.open{background:transparent;border:1px dashed var(--line)}
+.row.open .name{color:var(--muted)}
+.av{width:32px;height:32px;flex-shrink:0;border-radius:999px;background:var(--line);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.name{flex:1;font-weight:500;font-size:15px}
+.name small{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.st{font-size:13px;font-weight:600;color:var(--muted);text-align:right}
+.acc{color:var(--accent)!important}.wrn{color:var(--warn)!important}.soft{color:var(--soft)!important}
+.qrcard{background:var(--card);border-radius:20px;padding:14px;display:flex;gap:14px;align-items:center}
+.qr{width:132px;height:132px;flex-shrink:0;padding:10px;border-radius:12px;background:#F2F4F7}
+.code{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px}
+.finder{align-self:center;width:280px;height:280px;flex-shrink:0;position:relative;background:var(--card);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted)}
+.finder i{position:absolute;width:44px;height:44px;border:0 solid var(--accent)}
+.finder i:nth-child(1){top:20px;left:20px;border-top-width:4px;border-left-width:4px;border-top-left-radius:10px}
+.finder i:nth-child(2){top:20px;right:20px;border-top-width:4px;border-right-width:4px;border-top-right-radius:10px}
+.finder i:nth-child(3){bottom:20px;left:20px;border-bottom-width:4px;border-left-width:4px;border-bottom-left-radius:10px}
+.finder i:nth-child(4){bottom:20px;right:20px;border-bottom-width:4px;border-right-width:4px;border-bottom-right-radius:10px}
+.sq{width:44px;height:44px;flex-shrink:0;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--fg);font-size:20px}
+.side{min-height:190px;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.side .big{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px}
+.side .mine{margin-top:auto;font-size:13px;font-weight:600;color:var(--accent);min-height:18px}
+.score{min-height:76px;border-width:2px;padding-right:12px}
+.score.on{border-color:var(--accent)}
+.score .pts{width:36px;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px}
+.kv{display:flex;justify-content:space-between;font-size:14px}
+.kv span:first-child{color:var(--muted)}.kv span:last-child{font-weight:600}
+</style>
+</head>
+<body>
+<div id="app" class="phone"></div>
+<script>
+(function () {
+  var app = document.getElementById('app');
+  var zero = function () { return { you: 0, maya: 0, dre: 0, sam: 0 }; };
+  var fresh = function () {
+    return {
+      screen: 'home', mode: 'poker', betName: null, stake: 10, hosted: true, joined: 0, locked: false, copied: false,
+      stacks: null, hand: 1, phase: 'bet', raiseUnits: 4, action: null, contrib: null, lastPot: 0, handPick: null,
+      mySide: null, sideLocked: false, scores: zero(), matchWinner: null,
+      payouts: null, headline: '', base: 250, history: []
+    };
+  };
+  var S = fresh();
+  var H = [];
+  var on = function (fn) { H.push(fn); return 'data-h="' + (H.length - 1) + '"'; };
+  var set = function (o) { Object.assign(S, o); render(); };
+  var esc = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var fmt = function (n) { return n.toFixed(2); };
+
+  var P = [
+    { id: 'you', name: 'You', initial: 'Y' },
+    { id: 'maya', name: 'Maya', initial: 'M' },
+    { id: 'dre', name: 'Dre', initial: 'D' },
+    { id: 'sam', name: 'Sam', initial: 'S' }
+  ];
+  var ids = P.map(function (p) { return p.id; });
+  var nameOf = function (id) { return P.filter(function (p) { return p.id === id; })[0].name; };
+  var defaults = { poker: 'Friday poker', side: 'Will Dre hit the half-court shot?', match: 'Darts, first to 5' };
+  var modeLabels = { poker: 'Poker table', side: 'Pick a side', match: 'Score match' };
+  var modeDesc = {
+    poker: 'Raise, call and fold in the app. Cash out by chip stack.',
+    side: 'Yes or no on anything. Winners split the pot.',
+    match: 'Darts, pool, pickup. First to the target takes the pot.'
+  };
+  var samples = [
+    { name: 'Pickup basketball', detail: '6 players · settled', amount: '+30.00', up: true },
+    { name: 'Movie trivia', detail: '3 players · settled', amount: '-5.00', up: false }
+  ];
+
+  // Sample QR pattern (not scannable)
+  var qrPath = (function () {
+    var d = '';
+    var seed = 4821;
+    var rnd = function () { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    var finder = function (r, c) {
+      var corners = [[0, 0], [0, 14], [14, 0]];
+      for (var i = 0; i < corners.length; i++) {
+        var y = r - corners[i][0];
+        var x = c - corners[i][1];
+        if (y >= -1 && y <= 7 && x >= -1 && x <= 7) {
+          if (y < 0 || y > 6 || x < 0 || x > 6) return 0;
+          return (y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4)) ? 1 : 0;
+        }
+      }
+      return -1;
+    };
+    for (var r = 0; r < 21; r++) {
+      for (var c = 0; c < 21; c++) {
+        var f = finder(r, c);
+        if (f === -1 ? rnd() > 0.5 : f === 1) d += 'M' + c + ' ' + r + 'h1v1h-1z';
+      }
+    }
+    return d;
+  })();
+
+  function render() {
+    H = [];
+    var s = S;
+    var betName = s.betName != null ? s.betName : defaults[s.mode];
+    var pot = s.stake * 4;
+    var paid = s.screen === 'paid';
+    var payouts = s.payouts || zero();
+    var balance = s.base - (s.locked ? s.stake : 0) + (paid ? payouts.you : 0);
+    var html = '<div class="top"><button class="logo" aria-label="QuickBet, restart demo" ' + on(function () { S = fresh(); render(); }) + '>QuickBet</button><div class="tag">Demo · no real funds</div></div>';
+    var scr = '';
+
+    if (s.screen === 'home') {
+      scr += '<div class="card stack" style="border-radius:20px;padding:20px;gap:6px"><div class="label">Wallet balance</div><div class="num" style="font-size:40px">' + fmt(balance) + ' <span style="font-size:18px;color:var(--muted);letter-spacing:0">USDC</span></div></div>';
+      scr += '<div class="stack" style="gap:12px"><button class="btn primary" ' + on(function () { set({ screen: 'create', hosted: true, joined: 0, locked: false, betName: null, copied: false }); }) + '>New bet</button>';
+      scr += '<button class="btn" ' + on(function () { set({ screen: 'scan' }); }) + '>Scan QR to join a table</button></div>';
+      scr += '<div class="stack" style="gap:10px"><div class="label">Recent bets</div>';
+      s.history.concat(samples).forEach(function (h) {
+        scr += '<div class="row" style="padding:12px 16px"><div class="name">' + esc(h.name) + '<small>' + esc(h.detail) + '</small></div><div class="st ' + (h.up ? 'acc' : 'soft') + '" style="font-size:15px">' + h.amount + '</div></div>';
+      });
+      scr += '</div>';
+    }
+
+    if (s.screen === 'create') {
+      scr += '<h1 style="font-size:28px">Set up the bet</h1><div class="stack"><div class="label">Game style</div>';
+      ['poker', 'side', 'match'].forEach(function (m) {
+        var sel = m === s.mode;
+        scr += '<button class="opt mode' + (sel ? ' on' : '') + '" aria-pressed="' + sel + '" ' + on(function () { set({ mode: m }); }) + '><b>' + modeLabels[m] + '<span>' + (sel ? 'Selected' : '') + '</span></b><small>' + modeDesc[m] + '</small></button>';
+      });
+      scr += '</div><div class="stack"><label class="label" for="betName">What are you betting on?</label><input class="field" id="betName" value="' + esc(betName) + '"></div>';
+      scr += '<div class="stack"><div class="label">Buy-in per player (USDC)</div><div class="g4">';
+      [5, 10, 25, 50].forEach(function (v) {
+        var sel = v === s.stake;
+        scr += '<button class="pill' + (sel ? ' on' : '') + '" aria-pressed="' + sel + '" ' + on(function () { set({ stake: v }); }) + '>' + v + '</button>';
+      });
+      scr += '</div></div><div class="grow"></div><div class="stack" style="gap:6px"><button class="btn primary" ' + on(function () { set({ screen: 'lobby' }); }) + '>Create table and show QR</button>';
+      scr += '<button class="btn text" ' + on(function () { set({ screen: 'home' }); }) + '>Cancel</button></div>';
+    }
+
+    if (s.screen === 'scan') {
+      scr += '<h1 style="font-size:28px">Scan to join</h1><div class="finder"><i></i><i></i><i></i><i></i>Camera preview</div>';
+      scr += '<div class="body" style="font-size:15px">Point your camera at the host\'s QR code. You see the game and the buy-in before anything is locked.</div>';
+      scr += '<div class="stack"><label class="label" for="tableCode">Or type the table code</label><input class="field" id="tableCode" placeholder="TABLE-4821"></div>';
+      scr += '<div class="grow"></div><div class="stack" style="gap:6px"><button class="btn primary" ' + on(function () { set({ screen: 'lobby', hosted: false, joined: 3, locked: false, mode: 'poker', betName: 'Friday poker', stake: 10, copied: false }); }) + '>Simulate a scan</button>';
+      scr += '<button class="btn text" ' + on(function () { set({ screen: 'home' }); }) + '>Cancel</button></div>';
+    }
+
+    if (s.screen === 'lobby') {
+      var hostId = s.hosted ? 'you' : 'maya';
+      var full = s.joined >= 3;
+      var lockedCount = s.joined + (s.locked ? 1 : 0);
+      scr += '<div class="stack" style="gap:4px"><div class="eyebrow">' + modeLabels[s.mode] + ' · ' + s.stake + ' USDC buy-in</div><h1>' + esc(betName) + '</h1></div>';
+      scr += '<div class="qrcard"><div class="qr"><svg role="img" aria-label="Sample QR code for table TABLE-4821" width="112" height="112" viewBox="0 0 21 21" shape-rendering="crispEdges"><path d="' + qrPath + '" fill="#0B0F14"></path></svg></div>';
+      scr += '<div class="stack" style="gap:6px;min-width:0"><div class="label">Friends scan this to join</div><div class="code">TABLE-4821</div><button class="btn small" style="height:44px;font-size:14px" ' + on(function () { set({ copied: true }); }) + '>' + (s.copied ? 'Invite link copied' : 'Copy invite link') + '</button></div></div>';
+      scr += '<div class="stack"><div class="between label"><div>Players ' + (s.joined + 1) + ' of 4</div><div>In escrow: ' + fmt(lockedCount * s.stake) + ' USDC</div></div>';
+      P.forEach(function (p, i) {
+        var present = p.id === 'you' || i <= s.joined;
+        if (!present) { scr += '<div class="row open"><div class="av">+</div><div class="name">Open seat</div><div class="st">Waiting for scan</div></div>'; return; }
+        var isLocked = p.id !== 'you' || s.locked;
+        scr += '<div class="row"><div class="av">' + p.initial + '</div><div class="name">' + p.name + (p.id === hostId ? ' · host' : '') + '</div><div class="st ' + (isLocked ? 'acc' : 'wrn') + '">' + (isLocked ? 'Locked' : 'Not locked yet') + '</div></div>';
+      });
+      scr += '</div><div class="grow"></div><div class="stack" style="gap:10px">';
+      if (s.hosted && !full) scr += '<button class="btn small" ' + on(function () { set({ joined: Math.min(3, S.joined + 1) }); }) + '>Simulate a friend scanning the code</button>';
+      if (!s.locked) scr += '<button class="btn primary" ' + on(function () { set({ locked: true }); }) + '>Lock ' + s.stake + ' USDC in escrow</button>';
+      else if (!full) scr += '<div class="hint">Waiting for the table to fill</div>';
+      else scr += '<button class="btn primary" ' + on(function () {
+        set({ screen: 'game', stacks: { you: S.stake, maya: S.stake, dre: S.stake, sam: S.stake }, hand: 1, phase: 'bet', raiseUnits: 4, action: null, contrib: null, lastPot: 0, handPick: null, mySide: null, sideLocked: false, scores: zero(), matchWinner: null });
+      }) + '>Everyone\'s in. Start game</button>';
+      scr += '</div>';
+    }
+
+    if (s.screen === 'game' && s.mode === 'poker') {
+      var u = s.stake / 20, sb = u, bb = 2 * u;
+      var stacks = s.stacks;
+      var maxUnits = Math.max(4, Math.floor(Math.min(stacks.you, stacks.maya, stacks.dre, stacks.sam) / u));
+      var raiseUnits = Math.min(s.raiseUnits, maxUnits);
+      var R = raiseUnits * u;
+      var contrib = s.contrib || zero();
+      var folded = { you: s.action === 'fold', maya: false, dre: s.action === 'raise', sam: false };
+      var act = function (action) {
+        return function () {
+          var L = action === 'raise' ? R : bb;
+          var c = { you: action === 'fold' ? 0 : L, maya: L, dre: bb, sam: L };
+          ids.forEach(function (id) { c[id] = Math.min(c[id], stacks[id]); });
+          set({ action: action, phase: 'showdown', contrib: c, lastPot: c.you + c.maya + c.dre + c.sam, handPick: null });
+        };
+      };
+      var status = function (id) {
+        if (s.phase === 'bet') {
+          if (id === 'you') return ['Your turn', 'acc'];
+          if (id === 'maya') return ['Small blind ' + fmt(sb), ''];
+          if (id === 'dre') return ['Big blind ' + fmt(bb), ''];
+          return ['Called ' + fmt(bb), ''];
+        }
+        if (s.phase === 'result') {
+          if (id === s.handPick) return ['Won the hand, +' + fmt(s.lastPot - contrib[id]), 'acc'];
+          return [folded[id] ? 'Folded, -' + fmt(contrib[id]) : 'Lost ' + fmt(contrib[id]), ''];
+        }
+        if (folded[id]) return ['Folded', ''];
+        if (id === 'you') return [(s.action === 'raise' ? 'Raised to ' : 'Called ') + fmt(contrib.you), 'soft'];
+        if (id === 'dre') return ['Checked', 'soft'];
+        return ['Called ' + fmt(contrib[id]), 'soft'];
+      };
+      scr += '<div class="between" style="align-items:flex-end"><div class="stack" style="gap:4px"><div class="eyebrow">Poker table · Hand ' + s.hand + '</div><h1>' + esc(betName) + '</h1></div><div class="label" style="text-align:right">Escrow<br><b style="color:var(--fg)">' + fmt(pot) + ' USDC</b></div></div>';
+      scr += '<div class="card between" style="border-radius:20px;padding:16px 20px"><div><div class="label">Hand pot</div><div class="num" style="font-size:40px">' + fmt(s.phase === 'bet' ? sb + bb + bb : s.lastPot) + '</div></div><div class="label" style="text-align:right;line-height:1.5">Blinds<br><b style="color:var(--fg)">' + fmt(sb) + ' / ' + fmt(bb) + '</b></div></div>';
+      scr += '<div class="stack">';
+      P.forEach(function (p) {
+        var st = status(p.id);
+        scr += '<div class="row"><div class="av">' + p.initial + '</div><div class="name">' + p.name + '<small class="' + st[1] + '">' + st[0] + '</small></div><div class="st" style="font-size:12px;font-weight:400">Stack<br><b style="font-size:15px;color:var(--fg)">' + fmt(stacks[p.id]) + '</b></div></div>';
+      });
+      scr += '</div><div class="grow"></div>';
+      if (s.phase === 'bet') {
+        scr += '<div class="stack" style="gap:12px"><div class="between"><div class="body">To call: <b style="color:var(--fg)">' + fmt(bb) + '</b></div><div class="between" style="gap:10px"><button class="sq" aria-label="Lower the raise" ' + on(function () { set({ raiseUnits: Math.max(4, raiseUnits - 2) }); }) + '>−</button><div style="min-width:52px;text-align:center;font-weight:600">' + fmt(R) + '</div><button class="sq" aria-label="Increase the raise" ' + on(function () { set({ raiseUnits: Math.min(maxUnits, raiseUnits + 2) }); }) + '>+</button></div></div>';
+        scr += '<div class="g3"><button class="btn" style="font-size:16px" ' + on(act('fold')) + '>Fold</button><button class="btn outline" style="font-size:16px" ' + on(act('call')) + '>Call ' + fmt(bb) + '</button><button class="btn primary" style="font-size:16px" ' + on(act('raise')) + '>Raise ' + fmt(R) + '</button></div></div>';
+      }
+      if (s.phase === 'showdown') {
+        scr += '<div class="stack" style="gap:10px"><div class="body">Betting is closed. Show your cards, then pick who took the hand.</div><div class="g2">';
+        P.filter(function (p) { return !folded[p.id]; }).forEach(function (p) {
+          var sel = p.id === s.handPick;
+          scr += '<button class="opt' + (sel ? ' on' : '') + '" style="height:48px;text-align:center;font-weight:600;font-size:15px" aria-pressed="' + sel + '" ' + on(function () { set({ handPick: p.id }); }) + '>' + p.name + '</button>';
+        });
+        scr += '</div>';
+        if (s.handPick) scr += '<button class="btn primary" ' + on(function () {
+          var next = {};
+          ids.forEach(function (id) { next[id] = stacks[id] - contrib[id] + (id === S.handPick ? S.lastPot : 0); });
+          set({ stacks: next, phase: 'result' });
+        }) + '>Confirm hand winner</button>';
+        scr += '</div>';
+      }
+      if (s.phase === 'result') {
+        scr += '<div class="stack" style="gap:10px"><div style="font-size:15px;font-weight:600">' + (s.handPick === 'you' ? 'You take ' : nameOf(s.handPick) + ' takes ') + fmt(s.lastPot) + ' USDC</div><div class="g2">';
+        scr += '<button class="btn" style="font-size:16px" ' + on(function () { set({ hand: S.hand + 1, phase: 'bet', action: null, contrib: null, lastPot: 0, handPick: null, raiseUnits: 4 }); }) + '>Deal next hand</button>';
+        scr += '<button class="btn primary" style="font-size:16px" ' + on(function () { set({ screen: 'paid', payouts: Object.assign({}, stacks), headline: 'Table cashed out' }); }) + '>Cash out table</button></div></div>';
+      }
+    }
+
+    if (s.screen === 'game' && s.mode === 'side') {
+      var sideIds = { yes: ['maya'].concat(s.mySide === 'yes' ? ['you'] : []), no: ['dre', 'sam'].concat(s.mySide === 'no' ? ['you'] : []) };
+      var sideLabel = { yes: 'Yes', no: 'No' };
+      var callSide = function (k) {
+        return function () {
+          var w = sideIds[k];
+          var pay = zero();
+          w.forEach(function (id) { pay[id] = pot / w.length; });
+          set({ screen: 'paid', payouts: pay, headline: sideLabel[k] + ' wins the bet' });
+        };
+      };
+      scr += '<div class="stack" style="gap:4px"><div class="eyebrow">Pick a side · ' + fmt(pot) + ' USDC in escrow</div><h1>' + esc(betName) + '</h1></div><div class="g2" style="gap:12px">';
+      ['yes', 'no'].forEach(function (k) {
+        var sel = s.mySide === k;
+        scr += '<button class="opt side' + (sel ? ' on' : '') + '" aria-pressed="' + sel + '" ' + on(function () { if (!S.sideLocked) set({ mySide: k }); }) + '><span class="big">' + sideLabel[k] + '</span><span class="label">Pool</span><span style="font-weight:600;font-size:18px">' + fmt(sideIds[k].length * s.stake) + ' USDC</span><span class="body" style="font-size:13px">' + sideIds[k].map(nameOf).join(', ') + '</span><span class="mine">' + (sel ? 'Your side' : '') + '</span></button>';
+      });
+      scr += '</div>';
+      var preview = 'Pick a side to see your payout.';
+      if (s.mySide) {
+        var n = sideIds[s.mySide].length;
+        preview = 'If ' + sideLabel[s.mySide] + ' wins, ' + (n === 1 ? 'you take ' : n + ' players split ') + fmt(pot) + ' USDC. Your payout: ' + fmt(pot / n) + ' USDC.';
+      }
+      scr += '<div class="card body">' + preview + '</div><div class="note">No agreed result within 24 hours? The vault refunds every buy-in.</div><div class="grow"></div>';
+      if (s.sideLocked) {
+        scr += '<div class="stack" style="gap:10px"><div class="body">Sides are locked. When it\'s decided, the table calls the result.</div><div class="g2"><button class="btn primary" style="font-size:16px" ' + on(callSide('yes')) + '>Yes happened</button><button class="btn outline" style="font-size:16px" ' + on(callSide('no')) + '>No, it didn\'t</button></div></div>';
+      } else if (s.mySide) {
+        scr += '<button class="btn primary" ' + on(function () { set({ sideLocked: true }); }) + '>Lock in ' + sideLabel[s.mySide] + '</button>';
+      } else {
+        scr += '<div class="hint">Tap Yes or No</div>';
+      }
+    }
+
+    if (s.screen === 'game' && s.mode === 'match') {
+      var target = 5;
+      var top = Math.max(s.scores.you, s.scores.maya, s.scores.dre, s.scores.sam);
+      var leaders = ids.filter(function (id) { return s.scores[id] === top; });
+      var bump = function (id, d) {
+        return function () {
+          if (d > 0 && S.matchWinner) return;
+          var nv = Math.max(0, Math.min(target, S.scores[id] + d));
+          var scores = Object.assign({}, S.scores);
+          scores[id] = nv;
+          var w = S.matchWinner;
+          if (nv === target) w = id;
+          if (id === S.matchWinner && nv < target) w = null;
+          set({ scores: scores, matchWinner: w });
+        };
+      };
+      scr += '<div class="stack" style="gap:4px"><div class="eyebrow">Score match · First to 5</div><h1>' + esc(betName) + '</h1></div>';
+      scr += '<div class="card between" style="padding:14px 16px"><div class="body">Winner takes</div><div class="num" style="font-size:22px;letter-spacing:0">' + fmt(pot) + ' USDC</div></div><div class="stack" style="gap:10px">';
+      P.forEach(function (p) {
+        var won = p.id === s.matchWinner;
+        var leading = !s.matchWinner && top > 0 && leaders.length === 1 && leaders[0] === p.id;
+        scr += '<div class="row score' + (won ? ' on' : '') + '"><div class="name" style="font-size:16px">' + p.name + '<small class="acc" style="font-weight:600">' + (won ? 'Reached 5' : leading ? 'Leading' : '') + '</small></div><button class="sq" style="background:transparent" aria-label="Remove a point from ' + p.name + '" ' + on(bump(p.id, -1)) + '>−</button><div class="pts">' + s.scores[p.id] + '</div><button class="sq" style="background:var(--line);border-color:var(--line)" aria-label="Add a point for ' + p.name + '" ' + on(bump(p.id, 1)) + '>+</button></div>';
+      });
+      scr += '</div><div class="note">No agreed result within 24 hours? The vault refunds every buy-in.</div><div class="grow"></div>';
+      if (s.matchWinner) {
+        scr += '<button class="btn primary" ' + on(function () {
+          var pay = zero();
+          pay[S.matchWinner] = pot;
+          set({ screen: 'paid', payouts: pay, headline: S.matchWinner === 'you' ? 'You win the pot' : nameOf(S.matchWinner) + ' wins the pot' });
+        }) + '>' + (s.matchWinner === 'you' ? 'Confirm your win' : 'Confirm ' + nameOf(s.matchWinner) + ' as winner') + '</button>';
+      } else {
+        scr += '<div class="hint">Tap + as points are scored</div>';
+      }
+    }
+
+    if (paid) {
+      scr += '<div class="between" style="justify-content:flex-start"><svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2DD4A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l3 3 5-6"></path></svg><h1>' + esc(s.headline) + '</h1></div>';
+      scr += '<div class="body" style="color:var(--muted)">' + fmt(pot) + ' USDC paid out of escrow</div><div class="stack">';
+      P.forEach(function (p) {
+        var net = payouts[p.id] - s.stake;
+        scr += '<div class="row" style="min-height:56px"><div class="av">' + p.initial + '</div><div class="name">' + p.name + '</div><div class="st" style="font-size:15px;color:var(--fg)">' + fmt(payouts[p.id]) + ' USDC<br><span class="' + (net >= 0 ? 'acc' : '') + '" style="font-size:12px;color:var(--muted)">' + (net >= 0 ? '+' : '-') + fmt(Math.abs(net)) + '</span></div></div>';
+      });
+      scr += '</div><div class="card stack" style="gap:10px"><div class="kv"><span>Result confirmed by</span><span>4 of 4 players</span></div><div class="kv"><span>House fee</span><span>None</span></div><div class="kv"><span>Your balance</span><span>' + fmt(balance) + ' USDC</span></div></div><div class="grow"></div>';
+      scr += '<button class="btn primary" ' + on(function () {
+        var net = payouts.you - S.stake;
+        var entry = { name: betName, detail: modeLabels[S.mode] + ' · 4 players · settled', amount: (net >= 0 ? '+' : '-') + fmt(Math.abs(net)), up: net >= 0 };
+        set({ screen: 'home', base: S.base + net, locked: false, joined: 0, hosted: true, betName: null, payouts: null, copied: false, history: [entry].concat(S.history) });
+      }) + '>Done</button>';
+    }
+
+    app.innerHTML = html + '<div class="screen">' + scr + '</div>';
+  }
+
+  app.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-h]');
+    if (t && H[+t.getAttribute('data-h')]) H[+t.getAttribute('data-h')](e);
+  });
+  app.addEventListener('input', function (e) {
+    if (e.target.id === 'betName') S.betName = e.target.value;
+  });
+  render();
+})();
+</script>
+</body>
+</html>

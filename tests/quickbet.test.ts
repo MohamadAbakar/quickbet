@@ -10,7 +10,6 @@ import {
   PublicKey,
   Transaction,
   TransactionInstruction,
-  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import {
   createMint,
@@ -50,10 +49,15 @@ let nextId = BigInt(Date.now()) * 10n;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function send(ixs: TransactionInstruction[], signers: Keypair[]) {
+  // Poll the signature directly: the local validator's block-height based expiry
+  // produced false "expired" errors for transactions that had landed.
   for (let attempt = 0; ; attempt++) {
+    const bh = await connection.getLatestBlockhash("confirmed");
+    const tx = new Transaction({ feePayer: signers[0].publicKey, ...bh }).add(...ixs);
+    tx.sign(...signers);
+    let sig: string;
     try {
-      const tx = new Transaction().add(...ixs);
-      return await sendAndConfirmTransaction(connection, tx, signers, { commitment: "confirmed" });
+      sig = await connection.sendRawTransaction(tx.serialize(), { preflightCommitment: "confirmed" });
     } catch (e: any) {
       if (attempt < 4 && /Blockhash not found/i.test(String(e?.message))) {
         await sleep(400);
@@ -61,6 +65,18 @@ async function send(ixs: TransactionInstruction[], signers: Keypair[]) {
       }
       throw e;
     }
+    for (let i = 0; i < 120; i++) {
+      const st = (await connection.getSignatureStatuses([sig])).value[0];
+      if (st?.err) {
+        const t = await connection.getTransaction(sig, { commitment: "confirmed", maxSupportedTransactionVersion: 0 });
+        const err: any = new Error(`Transaction failed: ${JSON.stringify(st.err)}`);
+        err.logs = t?.meta?.logMessages ?? [];
+        throw err;
+      }
+      if (st && (st.confirmationStatus === "confirmed" || st.confirmationStatus === "finalized")) return sig;
+      await sleep(250);
+    }
+    if (attempt >= 2) throw new Error(`Transaction ${sig} not confirmed`);
   }
 }
 

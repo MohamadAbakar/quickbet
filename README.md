@@ -10,6 +10,7 @@ tests/               Program tests (node:test against a local validator)
 sdk/                 Shared TypeScript client: PDAs, instruction builders, Table decoder
 server/              Node + TypeScript: faucet, WebSocket game relay, devnet scripts
 app/                 Vite + React + TypeScript mobile web app (PWA)
+mockup/              Clickable design demo (standalone HTML, no chain), also served by the app at /mockup.html
 ```
 
 ## Status
@@ -131,7 +132,7 @@ It prints `http://<your-LAN-IP>:8787`. Phones on the same Wi-Fi (or your hotspot
 - [ ] Server awake: `https://<server>/health` returns `ok`.
 - [ ] Phones charged; your phone has opened the app once (funded wallet).
 - [ ] A backup table already created and waiting in its lobby.
-- [ ] The clickable mockup open in a browser tab as a fallback.
+- [ ] The clickable mockup open in a browser tab as a fallback: `https://<your-app>/mockup.html` (or open `mockup/quickbet-demo.html` locally).
 - [ ] Hotspot ready plus `npm run dev` on the Mac in case venue Wi-Fi blocks things.
 
 ## Out of scope
